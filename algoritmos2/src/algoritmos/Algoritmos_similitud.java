@@ -261,7 +261,8 @@ public class Algoritmos_similitud
         //guardarTiempoTrainingFichero((long) tiempoTraining/1000, "modelosSimilitud/"+url2+".txt");
     }
     
- 
+     ///////////////////////////////////////////// SIMILITUD PEARSON //////////////////////////////////////////
+
     
     public double similitudPearson(Pelicula i1, Pelicula i2, ArrayList<Long> test){
         // Variables auxiliares:
@@ -330,6 +331,81 @@ public class Algoritmos_similitud
             return 0;
         }
         
+    }
+    
+    
+    
+    
+   
+    
+    
+    public HashMap<Long, TreeSet<ItemSim>> getModeloSimilitud_byPearson(int k, ArrayList<Long> test, ArrayList<Pelicula> peliculas) {
+        // Estructura que representa el modelo de similitud (clave: id de pelicula; valor: lista de idpelicula-Similitud).
+        HashMap<Long, TreeSet<ItemSim>> modelo_similitud = new HashMap();
+        // Variables auxiliares:
+        TreeSet<ItemSim> fila1;
+        TreeSet<ItemSim> fila2;
+        long id1;
+        long id2;
+        double similitud;
+        long numpeliculas = peliculas.size();
+        
+        for (long i=0; i<numpeliculas; ++i){
+            //System.out.println(" pelicula "+i+" de "+numpeliculas);
+            //###// 1.1: Sacar la película numero i. Nota: estudiar si se pueden sacar todas de golpe.
+            //pelicula it1 = getpeliculaBD_byPos(instancia, i);
+            Pelicula it1 = peliculas.get((int)i);
+            id1 = it1.getIdPelicula();
+         
+            for (long j=i+1; j<numpeliculas; ++j){
+                //###// 1.2: Sacar la película numero j.
+                //pelicula it2 = getpeliculaBD_byPos(instancia, j);
+                Pelicula it2 = peliculas.get((int)j);
+                id2 = it2.getIdPelicula();
+                
+                // 1.2: Calculo de la similitud entre it1 e it2.
+                similitud = similitudPearson(it1, it2, test);
+                
+                // 1.3: Guardar la similitud en una estructura.
+                    //### 1.3: En el modelo definitivo, la similitud se guardará en la base de datos.
+                    //###//Similitud s1 = new Similitud(it1.id,it2.id,similitud);
+                //     NOTA: Hay que guardar, a la vez, tanto la similitud sim(id1,id2) como sim (id2,id1)
+                if (modelo_similitud.containsKey(id1)){
+                    fila1 =  modelo_similitud.get(id1);
+                    fila1.add(new ItemSim(id2,similitud));
+                    if (fila1.size() > k){
+                        fila1.remove(fila1.last());
+                    }
+                    
+                    if (modelo_similitud.containsKey(id2)){
+                        fila2 =  modelo_similitud.get(id2);
+                        fila2.add(new ItemSim(id1,similitud));
+                        if (fila2.size() > k){
+                            fila2.remove(fila2.last());
+                        }
+                    }else{
+                        modelo_similitud.put(id2, new TreeSet<ItemSim>());
+                        modelo_similitud.get(id2).add(new ItemSim(id1,similitud));
+                    }
+                }else{
+                    modelo_similitud.put(id1, new TreeSet<ItemSim>());
+                    modelo_similitud.get(id1).add(new ItemSim(id2,similitud));
+                    
+                    if (modelo_similitud.containsKey(id2)){
+                        fila2 =  modelo_similitud.get(id2);
+                        fila2.add(new ItemSim(id1,similitud));
+                        if (fila2.size() > k){
+                            fila2.remove(fila2.last());
+                        }
+                    }else{
+                        modelo_similitud.put(id2, new TreeSet<ItemSim>());
+                        modelo_similitud.get(id2).add(new ItemSim(id1,similitud));
+                    }
+                }
+            }
+        }
+        
+        return modelo_similitud;
     }
     
 }
