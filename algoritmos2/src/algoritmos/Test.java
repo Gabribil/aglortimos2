@@ -7,6 +7,11 @@
 package algoritmos;
 
 import Excepciones.ErrorDatoInvalido;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +23,9 @@ import java.util.TreeSet;
  * @author Pc
  */
 public class Test {
+        private String urlFichResultados;
     
-       public void ejecucionTest(int k, int pAlgSim, int pAlgPred, int n,ArrayList<Usuario> usuarios, ArrayList<Pelicul> peliculas) throws ErrorDatoInvalido, IOException, ClassNotFoundException{
+       public void ejecucionTest(int k, int pAlgSim, int pAlgPred, int n,ArrayList<Usuario> usuarios, ArrayList<Pelicula> peliculas) throws ErrorDatoInvalido, IOException, ClassNotFoundException{
         // Variables auxiliares:
         double MAE = 0;
         double cobertura = 0;
@@ -84,6 +90,19 @@ public class Test {
         guardarResultados(cad1+"-"+cad2, k, n, MAE/5, cobertura/5, tTraining/5, tTest/5 );
     }
        
+    private void guardarResultados(String algoritmos, int k, int n, double MAE, double cobertura, long tiempoTraining, long tiempoTest) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(urlFichResultados,true));
+        
+        bw.write( algoritmos+"         "+k+"   "+n+"     "+MAE+"       "+cobertura*100+"%         "+tiempoTraining+"          "+tiempoTest+" \r\n");
+        
+        bw.close();
+    }
     
+    private long leerTiempoTrainingFichero(String url) throws FileNotFoundException, IOException {
+        BufferedReader br = new BufferedReader(new FileReader(url));
+        long toRet = Long.parseLong(br.readLine());
+        return toRet;
+        
+    }
     
 }
