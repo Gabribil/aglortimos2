@@ -18,10 +18,7 @@ import java.util.TreeSet;
  * @author Pc
  */
 public class Algoritmos_pred {
-    
-    
-    
-    
+
     public Parametros testIAmasA(int n, HashMap<Long, TreeSet<ItemSim>> modeloSimilitud, List<Usuario> test, ArrayList<Pelicula> peliculas) {
         // Variables auxiliares:
         Iterator<Usuario> it1 = test.iterator();
@@ -292,7 +289,7 @@ public class Algoritmos_pred {
             while(it1.hasNext()){
                 v = it1.next();
                 idPAux = v.idpeli;
-                mediaK = medias.get(idPAux);
+                mediaK = peliculas.get((int)idPAux).getMedia();
                 itemSim = buscarVecino(idPAux, vecinos);
 
                 numerador = numerador + itemSim.getSim()*(v.getValor()-mediaK) ;
@@ -311,18 +308,13 @@ public class Algoritmos_pred {
         
     }
     
-    public HashMap<Long,Double> getMediaspeliculas_HashMap(ArrayList<Pelicula> peliculas){  //Me he quedado modificando esta funcion para que coja nuestras medias
+    public HashMap<Long,Double> getMediaspeliculas_HashMap(ArrayList<Pelicula> peliculas){ 
         HashMap<Long,Double> medias = new HashMap();
         
         //List<Object> lista =  this.getMediaspeliculasBD_List(gestorPersistencia);
-        Iterator<Pelicula> it = peliculas.iterator();
-        Object object[];
-                
-        while(it.hasNext()){
-            object = (Object[]) it.next();
-            
-            medias.put((Long) object[0], (Double) object[1]);
-            
+        
+        for(int i=0;i<peliculas.size();i++){
+                medias.put((long)peliculas.get(i).getIdPelicula(), (double)peliculas.get(i).getMedia());
         }
         
         return medias;
