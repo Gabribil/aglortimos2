@@ -19,7 +19,10 @@ import java.util.TreeSet;
  */
 public class Algoritmos_pred {
     
-    public Parametros testIAmasA(int n, HashMap<Long, TreeSet<ItemSim>> modeloSimilitud, List<Usuario> test, HashMap<Long, Double>pelishm) {
+    
+    
+    
+    public Parametros testIAmasA(int n, HashMap<Long, TreeSet<ItemSim>> modeloSimilitud, List<Usuario> test, ArrayList<Pelicula> peliculas) {
         // Variables auxiliares:
         Iterator<Usuario> it1 = test.iterator();
         Usuario u;
@@ -50,7 +53,7 @@ public class Algoritmos_pred {
 
                 // 3. Calculamos la valoracion real y la estimada.
                 valoracionReal = e.getValue().getValor();
-                mediaP = pelishm.get(idP);
+                mediaP = peliculas.get((int)idP).getMedia();
                 vecinos = modeloSimilitud.get(idP);
                 valoracionEstimada = calcularPrediccionIAmasA(n, u, mediaP,vecinos);
 
@@ -84,7 +87,7 @@ public class Algoritmos_pred {
     
     
     
-    public Parametros testWA(HashMap<Long, TreeSet<ItemSim>> modeloSimilitud, List<Usuario> test, HashMap<Long, Double> pelishm) {
+    public Parametros testWA(HashMap<Long, TreeSet<ItemSim>> modeloSimilitud, List<Usuario> test, ArrayList<Pelicula> peliculas) {
         // Variables auxiliares:
         Iterator<Usuario> it1 = test.iterator();
         Usuario u;
@@ -98,6 +101,9 @@ public class Algoritmos_pred {
         int numEstimacionesImposibles = 0;
         int numEstimacionesPosibles = 0;
         
+        // Nota: cargamos todas las medias de las peliculas a memoria para acelerar la ejecución
+        //HashMap<Long,Double> medias = getMediasPeliculasBD_HashMap(instancia);
+        
         // 1. Recorremos cada usuario de la partición test.
         int cont = 0;
         while (it1.hasNext()){
@@ -106,12 +112,12 @@ public class Algoritmos_pred {
             ++cont;
             // 2. Recorremos cada valoración del usuario en cuestión.
              for (Map.Entry<Long,Valoracion> e : u.getValoraciones().entrySet()) {
-                 idP = e.getValue().getIdPelicula();
+                 idP = e.getValue().idpeli;
                  
                  // 3. Calculamos la valoracion real y la estimada.
                  valoracionReal = e.getValue().getValor();
                  vecinos = modeloSimilitud.get(idP);
-                 valoracionEstimada = calcularPrediccionWA(u,vecinos, pelishm);
+                 valoracionEstimada = calcularPrediccionWA(u,vecinos, peliculas);
                  
                  // 4. Comprobamos si hemos podido hacer la predicción
                  if (valoracionEstimada != -1){
@@ -140,7 +146,8 @@ public class Algoritmos_pred {
         
     }
     
-     /**
+    
+    /**
      * Método para predecir la valoracion de un usuario sobre una película, teniendo en cuenta solo los vecinos más cercanos, utilizando el algoritmo de predicción IA+A.
      * @param u Usuario
      * @param idP identificador de la película a predecir.
@@ -204,7 +211,7 @@ public class Algoritmos_pred {
             
             while(it1.hasNext()){
                 v = it1.next();
-                idPAux = v.getIdPelicula();
+                idPAux = v.idpeli;
 
                 itemSim = buscarVecino(idPAux, vecinos);
 
@@ -226,16 +233,32 @@ public class Algoritmos_pred {
         }
         
     }
-
-     /**
-     * Método para predecir la valoracion de un usuario sobre una película, teniendo en cuenta solo los vecinos más cercanoS, utilizando el algoritmo de predicción IA+A.
-     * @param u Usuario
+    
+    
+    /**
+     * Método para buscar la similitud de una película
      * @param idP identificador de la película a predecir.
      * @param vecinos Conjunto de vecinos más cercanos a la película a precedir.
-     * @return Devuelve la valoracion estimada. Devuelve -1 si no se ha podido predecir
+     * @return Devuelve la pareja película-similitud. Si existe, devuelve una pareja con sus campos a cero.
      * @throws No se lanzan excepciones.
     */
-    private double calcularPrediccionWA(Usuario u, TreeSet<ItemSim> vecinos, HashMap<Long,Double> medias) {
+    private ItemSim buscarVecino(long idP, TreeSet<ItemSim> vecinos) {
+        Iterator<ItemSim> it = vecinos.iterator();
+        ItemSim i;
+        
+        while (it.hasNext()){
+            i = it.next();
+            
+            if (i.getId() == idP){
+                return i;
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    private double calcularPrediccionWA(Usuario u, TreeSet<ItemSim> vecinos, ArrayList<Pelicula> peliculas) {
         // Estructura con solamente las valoraciones que un usuario ha realizado sobre los k vecinos mas cercanos a idP
         ArrayList<Valoracion> valoracionesCercanas = new ArrayList();
         
@@ -268,7 +291,7 @@ public class Algoritmos_pred {
 
             while(it1.hasNext()){
                 v = it1.next();
-                idPAux = v.getIdPelicula();
+                idPAux = v.idpeli;
                 mediaK = medias.get(idPAux);
                 itemSim = buscarVecino(idPAux, vecinos);
 
@@ -288,25 +311,23 @@ public class Algoritmos_pred {
         
     }
     
-    /**
-     * Método para buscar la similitud de una película
-     * @param idP identificador de la película a predecir.
-     * @param vecinos Conjunto de vecinos más cercanos a la película a precedir.
-     * @return Devuelve la pareja película-similitud. Si existe, devuelve una pareja con sus campos a cero.
-     * @throws No se lanzan excepciones.
-    */
-    private ItemSim buscarVecino(long idP, TreeSet<ItemSim> vecinos) {
-        Iterator<ItemSim> it = vecinos.iterator();
-        ItemSim i;
+    public HashMap<Long,Double> getMediaspeliculas_HashMap(ArrayList<Pelicula> peliculas){  //Me he quedado modificando esta funcion para que coja nuestras medias
+        HashMap<Long,Double> medias = new HashMap();
         
-        while (it.hasNext()){
-            i = it.next();
+        //List<Object> lista =  this.getMediaspeliculasBD_List(gestorPersistencia);
+        Iterator<Pelicula> it = peliculas.iterator();
+        Object object[];
+                
+        while(it.hasNext()){
+            object = (Object[]) it.next();
             
-            if (i.getId() == idP){
-                return i;
-            }
+            medias.put((Long) object[0], (Double) object[1]);
+            
         }
         
-        return null;
+        return medias;
     }
 }
+
+
+
