@@ -16,10 +16,10 @@ import java.util.TreeSet;
 /**
  *
  * @author Pc
- 
+ */
 public class Test {
     
-       public void ejecucionTest(int k, int pAlgSim, int pAlgPred, int n,ArrayList<Usuario> usuarios, HashMap<Long,Double> pelishm) throws ErrorDatoInvalido, IOException, ClassNotFoundException{
+       public void ejecucionTest(int k, int pAlgSim, int pAlgPred, int n,ArrayList<Usuario> usuarios, ArrayList<Pelicul> peliculas) throws ErrorDatoInvalido, IOException, ClassNotFoundException{
         // Variables auxiliares:
         double MAE = 0;
         double cobertura = 0;
@@ -52,9 +52,9 @@ public class Test {
             // PASO 2: Predicción de la partición test
             tiempoTest =  System.currentTimeMillis();
                 if(pAlgPred == 0){
-                    param = ap.testIAmasA(n, modeloS, test, pelishm);
+                    param = ap.testIAmasA(n, modeloS, test, peliculas);
                 }else{
-                    param = ap.testWA(modeloS, test, pelishm);
+                    param = ap.testWA(modeloS, test, peliculas);
                 }
             tiempoTest =  System.currentTimeMillis() - tiempoTest;
             
@@ -87,4 +87,3 @@ public class Test {
     
     
 }
-*/
