@@ -106,14 +106,22 @@ public class Cargadatos{
 		}
 	}
     }
+    
+    public static HashMap<Long, Double> cargarPelisHashMap(ArrayList<Pelicula> pelis){
+        HashMap<Long,Double>pelishm = new HashMap();
+        for(int i=0;i<pelis.size();i++){
+            pelishm.put(pelis.get(i).getIdPelicula(), (double) pelis.get(i).getMedia());            
+        }
+        return pelishm;
+    }
+    
     public static void main(String[] args) {
         // TODO code application logic here
         ArrayList<Pelicula> pelis=new ArrayList<>(); //lista peliculas
         ArrayList<Usuario> usuarios=new ArrayList<>(); //lista usuarios
         HashMap mapausuarios = new HashMap(); //para buscar la posicion de un usuario en el vector a partir de su id
-
-        String archivopelis = "C:\\Users\\Pc\\Documents\\NetBeansProjects\\algoritmos\\src\\algoritmos\\peliculas2.csv";
-	String archivovaloraciones = "C:\\Users\\Pc\\Documents\\NetBeansProjects\\algoritmos\\src\\algoritmos\\ratings7.csv";
+        String archivopelis = "/home/jose/NetBeansProjects/aglortimos2/algoritmos2/src/algoritmos/peliculas2.csv";
+	String archivovaloraciones = "/home/jose/NetBeansProjects/aglortimos2/algoritmos2/src/algoritmos/ratings7.csv";
 	
         cargarpeliculas(archivopelis, pelis);
         cargarvaloraciones(archivovaloraciones, pelis, usuarios, mapausuarios);
@@ -129,6 +137,8 @@ public class Cargadatos{
                 
             }
         }
+        
+        Algoritmos_pred ap = new Algoritmos_pred();
         
         //System.out.println(pelis.get(1000).valoraciones.get(0).estrellas);
  

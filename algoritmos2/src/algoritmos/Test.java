@@ -16,15 +16,16 @@ import java.util.TreeSet;
 /**
  *
  * @author Pc
- */
+ 
 public class Test {
     
-       public void ejecucionTest(int k, int pAlgSim, int pAlgPred, int n,ArrayList<Usuario> usuarios) throws ErrorDatoInvalido, IOException, ClassNotFoundException{
+       public void ejecucionTest(int k, int pAlgSim, int pAlgPred, int n,ArrayList<Usuario> usuarios, HashMap<Long,Double> pelishm) throws ErrorDatoInvalido, IOException, ClassNotFoundException{
         // Variables auxiliares:
         double MAE = 0;
         double cobertura = 0;
         long tTraining = 0;
         long tTest = 0;
+        Algoritmos_pred ap = new Algoritmos_pred();
         
         for (int ciclo_5fcv = 0; ciclo_5fcv < 5; ++ciclo_5fcv){
             
@@ -41,8 +42,6 @@ public class Test {
             // Variables auxiliares:
             long tiempoTest = 0;
             Parametros param = new Parametros();
-            
-
 
             // DESERIALIZAR UN MODELO SIMILIUTD
             String url = k+"-"+pAlgSim+"-"+ciclo_5fcv;
@@ -53,9 +52,9 @@ public class Test {
             // PASO 2: Predicción de la partición test
             tiempoTest =  System.currentTimeMillis();
                 if(pAlgPred == 0){
-                    param = testIAmasA(n, modeloS, test, instancia);
+                    param = ap.testIAmasA(n, modeloS, test, pelishm);
                 }else{
-                    param = testWA(modeloS, test, instancia);
+                    param = ap.testWA(modeloS, test, pelishm);
                 }
             tiempoTest =  System.currentTimeMillis() - tiempoTest;
             
@@ -84,5 +83,8 @@ public class Test {
         
         guardarResultados(cad1+"-"+cad2, k, n, MAE/5, cobertura/5, tTraining/5, tTest/5 );
     }
+       
+    
     
 }
+*/

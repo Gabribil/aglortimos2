@@ -17,4 +17,5 @@ public class Valoracion {
     
     Valoracion(int est, int usr, int peli){estrellas=est;iduser=usr;idpeli=peli;}
     int getValor(){return estrellas;}
+    long getIdPelicula(){return idpeli;}
 }
