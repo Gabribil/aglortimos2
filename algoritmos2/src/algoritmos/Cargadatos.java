@@ -115,7 +115,7 @@ public class Cargadatos{
         return pelishm;
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ErrorDatoInvalido, IOException, ClassNotFoundException {
         // TODO code application logic here
         ArrayList<Pelicula> pelis=new ArrayList<>(); //lista peliculas
         ArrayList<Usuario> usuarios=new ArrayList<>(); //lista usuarios
@@ -126,9 +126,10 @@ public class Cargadatos{
         cargarpeliculas(archivopelis, pelis);
         cargarvaloraciones(archivovaloraciones, pelis, usuarios, mapausuarios);
         
-        Algoritmos_similitud as = new Algoritmos_similitud();
+       Algoritmos_similitud as = new Algoritmos_similitud();
         
-        for (int i = 0; i < 5; ++i){
+       as.ejecucionTrainingCoseno(3, pelis);
+        /*for (int i = 0; i < 5; ++i){
             try {
                 //ejecucionTraining(k,algSim,i);
                 System.out.println("ESTADO:  k = 3, ciclo = "+i);
@@ -136,12 +137,19 @@ public class Cargadatos{
             } catch (    ErrorDatoInvalido | IOException ex) {
                 
             }
-        }
+        }*/
         
-        Algoritmos_pred ap = new Algoritmos_pred();
         
+        
+        //Algoritmos_pred ap = new Algoritmos_pred();
+   
         //System.out.println(pelis.get(1000).valoraciones.get(0).estrellas);
  
+        //Test t = new Test("/results.txt");
+       
+        //int n=10;
+        //t.ejecucionTest(3, 0, 1, n, usuarios, pelis);
+        
 	System.out.println("Done");
         //______________________
         

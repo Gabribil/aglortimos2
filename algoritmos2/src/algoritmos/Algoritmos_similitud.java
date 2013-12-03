@@ -8,6 +8,8 @@ package algoritmos;
 
 
 import Excepciones.ErrorDatoInvalido;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -255,10 +257,16 @@ public class Algoritmos_similitud
         // SERIALIZAR DESERIALIZAR UN MODELO SIMILIUTD
         String url = k+"-Coseno";
         SerializarModeloSimilitud selializar = new SerializarModeloSimilitud(modeloSimilitud);
-        selializar.serializar("C:\\Users\\Pc\\Documents\\"+url+".bin");
+        selializar.serializar(url+".bin");
         
         String url2 = "tt"+url;
-        //guardarTiempoTrainingFichero((long) tiempoTraining/1000, "modelosSimilitud/"+url2+".txt");
+        guardarTiempoTrainingFichero((long) tiempoTraining/1000, url2+".txt");
+    }
+    
+    private void guardarTiempoTrainingFichero(long l, String url) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(url))) {
+            bw.write( Long.toString(l));
+        }
     }
     
      ///////////////////////////////////////////// SIMILITUD PEARSON //////////////////////////////////////////

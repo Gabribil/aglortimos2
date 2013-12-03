@@ -23,9 +23,25 @@ import java.util.TreeSet;
  * @author Pc
  */
 public class Test {
-        private String urlFichResultados;
-    
-       public void ejecucionTest(int k, int pAlgSim, int pAlgPred, int n,ArrayList<Usuario> usuarios, ArrayList<Pelicula> peliculas) throws ErrorDatoInvalido, IOException, ClassNotFoundException{
+        private final String urlFichResultados;
+        
+    public Test(String urlFichResults){
+        urlFichResultados=urlFichResults;
+    }
+
+    /**
+     *
+     * @param k
+     * @param pAlgSim
+     * @param pAlgPred
+     * @param n
+     * @param usuarios
+     * @param peliculas
+     * @throws ErrorDatoInvalido
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public void ejecucionTest(int k, int pAlgSim, int pAlgPred, int n, ArrayList<Usuario> usuarios, ArrayList<Pelicula> peliculas) throws ErrorDatoInvalido, IOException, ClassNotFoundException{
         // Variables auxiliares:
         double MAE = 0;
         double cobertura = 0;
@@ -52,10 +68,13 @@ public class Test {
             // DESERIALIZAR UN MODELO SIMILIUTD
             String url = k+"-"+pAlgSim+"-"+ciclo_5fcv;
             SerializarModeloSimilitud deserializar = new SerializarModeloSimilitud();
-            HashMap<Long, TreeSet<ItemSim>> modeloS = deserializar.deserializar("modelosSimilitud/"+url+".bin").getModeloSimilitud();
-
+            HashMap<Long, TreeSet<ItemSim>> modeloS = deserializar.deserializar("/"+url+".bin").getModeloSimilitud();
+            
+            
 
             // PASO 2: Predicción de la partición test
+            //si pAlgPred es 0 realiza el test de ImasA
+            //si no realiza los testWA
             tiempoTest =  System.currentTimeMillis();
                 if(pAlgPred == 0){
                     param = ap.testIAmasA(n, modeloS, test, peliculas);
@@ -65,7 +84,7 @@ public class Test {
             tiempoTest =  System.currentTimeMillis() - tiempoTest;
             
             String url2 = "tt"+url;
-            long tiempoTraining = leerTiempoTrainingFichero( "modelosSimilitud/"+url2+".txt");
+            long tiempoTraining = leerTiempoTrainingFichero( "/"+url2+".txt");
             
             MAE += param.getMAE();
             cobertura += param.getCobertura();
